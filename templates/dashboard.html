@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h1>📊 AQI Dashboard</h1>
+
+<div class="cards">
+
+    <div class="card">
+        <h3>Predicted AQI</h3>
+        <h1>{{ result or 162 }}</h1>
+    </div>
+
+    <div class="card">
+        <h3>Category</h3>
+        <p>{{ advice or "Moderate" }}</p>
+    </div>
+
+</div>
+
+<!-- CHART -->
+<canvas id="aqiChart"></canvas>
+
+<script>
+var ctx = document.getElementById('aqiChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Now', '+6h', '+12h', '+18h', '+24h'],
+        datasets: [{
+            label: 'AQI Trend',
+            data: [120, 150, 180, 160, 170],
+            borderColor: 'orange',
+            fill: true
+        }]
+    }
+});
+</script>
+
+{% endblock %}

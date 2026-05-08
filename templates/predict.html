@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AQI Prediction</title>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        body {
+            background-color: #e6f7ff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+            color: #2d3436;
+        }
+
+        .main-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
+        }
+
+        .container {
+            width: 330px;
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+            height: fit-content;
+        }
+
+        h2 {
+            text-align: center;
+            color: #2d3436;
+        }
+
+        label {
+            margin-top: 10px;
+            display: block;
+            font-weight: bold;
+        }
+
+        select {
+            width: 100%;
+            padding: 9px;
+            margin: 5px 0 12px 0;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 15px;
+        }
+
+        button {
+            width: 100%;
+            padding: 11px;
+            background-color: #00b894;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #019875;
+        }
+
+        .result-card {
+            width: 380px;
+        }
+
+        .aqi-box {
+            color: white;
+            text-align: center;
+            padding: 25px;
+            border-radius: 15px;
+        }
+
+        .aqi-box h1 {
+            font-size: 52px;
+            margin: 10px 0;
+        }
+
+        .status-btn {
+            margin-top: 12px;
+            background: white;
+            color: black;
+            padding: 8px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .summary {
+            margin-top: 15px;
+            background: #d6ecff;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .empty-box {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+        }
+
+        canvas {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>🌍 Air Quality Monitoring & Prediction System</h1>
+
+<div class="main-container">
+
+    <!-- LEFT FORM -->
+    <div class="container">
+
+        <h2>📍 Select Location</h2>
+
+        <form method="POST">
+
+            <!-- STATE -->
+            <label>State</label>
+
+            <select name="state" id="state" onchange="updateCities()">
+
+                <option value="">Select State</option>
+
+                <option>Andhra Pradesh</option>
+                <option>Arunachal Pradesh</option>
+                <option>Assam</option>
+                <option>Bihar</option>
+                <option>Chhattisgarh</option>
+                <option>Goa</option>
+                <option>Gujarat</option>
+                <option>Haryana</option>
+                <option>Himachal Pradesh</option>
+                <option>Jharkhand</option>
+                <option>Karnataka</option>
+                <option>Kerala</option>
+                <option>Madhya Pradesh</option>
+                <option>Maharashtra</option>
+                <option>Manipur</option>
+                <option>Meghalaya</option>
+                <option>Mizoram</option>
+                <option>Nagaland</option>
+                <option>Odisha</option>
+                <option>Punjab</option>
+                <option>Rajasthan</option>
+                <option>Sikkim</option>
+                <option>Tamil Nadu</option>
+                <option>Telangana</option>
+                <option>Tripura</option>
+                <option>Uttar Pradesh</option>
+                <option>Uttarakhand</option>
+                <option>West Bengal</option>
+                <option>Delhi</option>
+
+            </select>
+
+            <!-- CITY -->
+            <label>Capital City</label>
+
+            <select name="city" id="city">
+
+                <option>Select State First</option>
+
+            </select>
+
+            <button type="submit">Predict AQI</button>
+
+        </form>
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+    {% if result is not none %}
+
+        {% if result <= 50 %}
+            {% set color = "#2ecc71" %}
+        {% elif result <= 100 %}
+            {% set color = "#f1c40f" %}
+        {% elif result <= 200 %}
+            {% set color = "#e67e22" %}
+        {% else %}
+            {% set color = "#e74c3c" %}
+        {% endif %}
+
+        <div class="result-card">
+
+            <!-- AQI BOX -->
+            <h2>📈 AQI Prediction</h2>
+
+            <div class="aqi-box" style="background: {{ color }};">
+
+                <h3>Air Quality Index</h3>
+
+                <h1>{{ result }}</h1>
+
+                <p>µg/m³</p>
+
+                <div class="status-btn">
+                    {{ advice }}
+                </div>
+
+            </div>
+
+            <!-- LOCATION -->
+            <div class="summary">
+
+                <h3>📍 Location Details</h3>
+
+                <p><b>{{ city }}</b>, {{ state }}</p>
+
+            </div>
+
+            <!-- WEATHER -->
+            {% if temperature is not none %}
+            <div class="summary">
+
+                <h3>🌤 Weather Forecast</h3>
+
+                <p>🌡 Temperature: {{ temperature }} °C</p>
+
+                <p>💧 Humidity: {{ humidity }} %</p>
+
+                <p>🌥 {{ weather_desc }}</p>
+
+            </div>
+            {% endif %}
+
+            <!-- HEALTH -->
+            <div class="summary">
+
+                <h3>🩺 Health Impact</h3>
+
+                <p>{{ advice }}</p>
+
+            </div>
+
+            <!-- POLLUTANTS -->
+            <div class="summary">
+
+                <h3>🧾 Pollutant Summary</h3>
+
+                <canvas id="pollutionChart"></canvas>
+
+                <p><b>PM2.5:</b> {{ pm25 }}</p>
+                <p><b>PM10:</b> {{ pm10 }}</p>
+                <p><b>NO2:</b> {{ no2 }}</p>
+                <p><b>CO:</b> {{ co }}</p>
+                <p><b>SO2:</b> {{ so2 }}</p>
+                <p><b>O3:</b> {{ o3 }}</p>
+
+            </div>
+
+        </div>
+
+    {% else %}
+
+        <div class="result-card">
+
+            <div class="empty-box">
+
+                <h3>📊 No Data Yet</h3>
+
+                <p>Select location and click <b>Predict AQI</b></p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+<!-- POLLUTION CHART -->
+{% if pm25 is not none %}
+<script>
+
+window.onload = function () {
+
+    const canvas = document.getElementById('pollutionChart');
+
+    if (canvas) {
+
+        const ctx = canvas.getContext('2d');
+
+        new Chart(ctx, {
+
+            type: 'doughnut',
+
+            data: {
+
+                labels: ['PM2.5', 'PM10', 'NO2', 'SO2', 'CO', 'O3'],
+
+                datasets: [{
+
+                    data: [
+                        {{ pm25 }},
+                        {{ pm10 }},
+                        {{ no2 }},
+                        {{ so2 }},
+                        {{ co }},
+                        {{ o3 }}
+                    ],
+
+                    backgroundColor: [
+                        '#ff7675',
+                        '#74b9ff',
+                        '#55efc4',
+                        '#ffeaa7',
+                        '#a29bfe',
+                        '#fd79a8'
+                    ]
+
+                }]
+            },
+
+            options: {
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+
+        });
+    }
+};
+
+</script>
+{% endif %}
+
+<!-- STATE-CITY SCRIPT -->
+<script>
+
+const stateCityMap = {
+
+    "Andhra Pradesh": ["Amaravati"],
+    "Arunachal Pradesh": ["Itanagar"],
+    "Assam": ["Dispur"],
+    "Bihar": ["Patna"],
+    "Chhattisgarh": ["Raipur"],
+    "Goa": ["Panaji"],
+    "Gujarat": ["Gandhinagar"],
+    "Haryana": ["Chandigarh"],
+    "Himachal Pradesh": ["Shimla"],
+    "Jharkhand": ["Ranchi"],
+    "Karnataka": ["Bangalore"],
+    "Kerala": ["Thiruvananthapuram"],
+    "Madhya Pradesh": ["Bhopal"],
+    "Maharashtra": ["Mumbai"],
+    "Manipur": ["Imphal"],
+    "Meghalaya": ["Shillong"],
+    "Mizoram": ["Aizawl"],
+    "Nagaland": ["Kohima"],
+    "Odisha": ["Bhubaneswar"],
+    "Punjab": ["Chandigarh"],
+    "Rajasthan": ["Jaipur"],
+    "Sikkim": ["Gangtok"],
+    "Tamil Nadu": ["Chennai"],
+    "Telangana": ["Hyderabad"],
+    "Tripura": ["Agartala"],
+    "Uttar Pradesh": ["Lucknow"],
+    "Uttarakhand": ["Dehradun"],
+    "West Bengal": ["Kolkata"],
+    "Delhi": ["New Delhi"]
+
+};
+
+function updateCities() {
+
+    const state = document.getElementById("state").value;
+
+    const cityDropdown = document.getElementById("city");
+
+    cityDropdown.innerHTML = "";
+
+    if (stateCityMap[state]) {
+
+        stateCityMap[state].forEach(city => {
+
+            let option = document.createElement("option");
+
+            option.value = city;
+
+            option.text = city;
+
+            cityDropdown.appendChild(option);
+
+        });
+
+    }
+}
+
+</script>
+
+</body>
+</html>

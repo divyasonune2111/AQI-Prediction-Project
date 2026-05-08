@@ -1,0 +1,154 @@
+/* ================= GLOBAL ================= */
+body {
+    background-color: #e6f7ff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    text-align: center;
+}
+
+/* ================= TITLE ================= */
+h1 {
+    margin-top: 20px;
+}
+
+/* ================= MAIN LAYOUT ================= */
+.main-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+/* ================= LEFT FORM ================= */
+.container {
+    width: 320px;
+    background: white;
+    padding: 10px;   /* 🔽 reduced height */
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.15);
+}
+
+.container h2 {
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+/* LABELS */
+label {
+    margin-top: 5px;
+    display: block;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* INPUT & SELECT */
+input, select {
+    width: 100%;
+    padding: 6px;          
+    margin-top: 3px;
+    margin-bottom: 6px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+/* ================= BUTTON ================= */
+button {
+    width: 100%;
+    padding: 8px;          
+    margin-top: 10px;
+    background-color: #00b894;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #019875;
+}
+
+/* ================= RIGHT PANEL ================= */
+.result-card {
+    width: 350px;
+}
+
+/* ================= AQI BOX ================= */
+.aqi-box {
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 15px;
+}
+
+.aqi-box h1 {
+    font-size: 45px;
+    margin: 10px 0;
+}
+
+/* STATUS BUTTON */
+.status-btn {
+    margin-top: 10px;
+    background: white;
+    color: black;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+
+/* ================= INFO BOXES ================= */
+.summary {
+    background: #e6f7ff;   
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 12px;
+    text-align: left;
+}
+
+.summary h3 {
+    margin-bottom: 6px;
+    font-size: 16px;
+}
+
+/* ================= EMPTY STATE ================= */
+.empty-box {
+    text-align: center;
+    padding: 30px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+/* ================= HOME PAGE CARDS ================= */
+.cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.card {
+    background: #1e2a38;
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 200px;
+}
+
+/* ================= SMALL BUTTONS (HOME) ================= */
+.buttons button {
+    padding: 6px 12px;
+    width: auto;
+    font-size: 13px;
+    margin: 5px;
+}
+
+/* ================= OPTIONAL GRID ================= */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+}
